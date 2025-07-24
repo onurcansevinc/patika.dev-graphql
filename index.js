@@ -1,47 +1,61 @@
-const { authors, books } = require('./data');
+const data = require('./data');
 const { ApolloServer, gql } = require('apollo-server');
 const { ApolloServerPluginLandingPageGraphQLPlayground } = require('apollo-server-core');
 
 const typeDefs = gql`
-    type Book {
-        title: String
-        author: String
+    type User {
+        id: Int
+        username: String
+        email: String
     }
 
-    type Author {
+    type Event {
+        id: Int
+        title: String
+        desc: String
+        date: String
+        from: String
+        to: String
+        location_id: Int
+        user_id: Int
+    }
+
+    type Location {
+        id: Int
         name: String
-        age: Int
-        books: [Book!]
+        desc: String
+        lat: Float
+        lng: Float
+    }
+
+    type Participant {
+        id: Int
+        user_id: Int
+        event_id: Int
     }
 
     type Query {
-        books: [Book]
-        book: Book
-
-        authors: [Author!]
-        author(name: String!): Author
+        users: [User!]
+        events: [Event!]
+        locations: [Location!]
+        participants: [Participant!]
     }
 `;
 
 const resolvers = {
     Query: {
-        books: () => books,
-        authors: () => authors,
-
-        author: (parent, args) => {
-            const filtered = authors.find((author) => author.name.toLowerCase().startsWith(args.name.toLowerCase()));
-            return filtered;
-        },
-    },
-
-    Author: {
-        books: (parent, args) => {
-            return books.filter((book) => book.author == parent.name);
-        },
+        users: () => data.users,
+        events: () => data.events,
+        locations: () => data.locations,
+        participants: () => data.participants,
     },
 };
 
-const server = new ApolloServer({ typeDefs, resolvers, plugins: [ApolloServerPluginLandingPageGraphQLPlayground()] });
+const server = new ApolloServer({
+    typeDefs,
+    resolvers,
+    plugins: [ApolloServerPluginLandingPageGraphQLPlayground()],
+});
 
 server.listen().then(({ url }) => {
     console.log(`🚀 Server ready at ${url}`);
