@@ -40,16 +40,16 @@ const typeDefs = gql`
 
     type Query {
         users: [User!]
-        user(id: Int!): User
+        user(id: ID!): User
 
         events: [Event!]
-        event(id: Int!): Event
+        event(id: ID!): Event
 
         locations: [Location!]
-        location(id: Int!): Location
+        location(id: ID!): Location
 
         participants: [Participant!]
-        participant(id: Int!): Participant
+        participant(id: ID!): Participant
     }
 `;
 
